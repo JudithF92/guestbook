@@ -1,0 +1,38 @@
+.messageWrapper {
+    border: 2px solid black;
+    width: 100%;
+    background-color: lightblue;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.textWrapper {
+    border: 2px solid black;
+    font-size: 1.5rem;
+    background-color: beige;
+    margin: 0 0.5rem 0.2rem;
+    border-radius: 5px;
+}
+
+p {
+    margin: 0.2rem 1rem;
+}
+
+.date {
+    color: gray;
+}
+
+.icons {
+    text-align: end;
+}
+
+.edited {
+    text-align: end;
+    font-style: italic;
+    color: gray;
+}

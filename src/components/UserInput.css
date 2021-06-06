@@ -1,0 +1,25 @@
+.userInputWrapper{
+    border: 2px solid black;
+    width: 30vw;
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 0 1rem 1.5rem;
+}
+
+.name {
+    margin: 0.2rem 2rem 0.5rem;
+}
+
+.enterMessage {
+    width: 90%;
+    max-width: 90%;
+    min-width: 90%;
+    height: 5rem;
+    padding: 0;
+    margin: 0.2rem 2rem 1rem;
+}
