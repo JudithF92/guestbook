@@ -1,4 +1,4 @@
-.userInputWrapper{
+.changeMessageWrapper{
     border: 2px solid black;
     width: 30vw;
     background-color: white;
@@ -9,10 +9,6 @@
     transform: translate(-50%, -50%);
     text-align: center;
     padding: 0 1rem 1.5rem;
-}
-
-.name {
-    margin: 0.2rem 2rem 0.5rem;
 }
 
 .enterMessage {

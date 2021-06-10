@@ -31,6 +31,15 @@ p {
     text-align: end;
 }
 
+.editMessage, .deleteMessage {
+    background-color: transparent;
+    border: none;
+}
+
+.editMessage:active, .deleteMessage:active {
+    transform: scale(1.02);
+}
+
 .edited {
     text-align: end;
     font-style: italic;
