@@ -66,7 +66,14 @@ class App extends React.Component {
   handleEditInput = () => {
     if(this.state.text !== ''){
       console.log(this.state.editIndex)
-      // use ID and filter
+      const array = [...this.state.messages];
+      array[this.state.editIndex].text = this.state.text;
+      this.setState({messages: array}, 
+        () => (
+          this.setState({
+            text: ''
+          })
+        ));
       this.onCancel();
       // TODO update database
     }
