@@ -7,7 +7,15 @@ const DisplayMessages = ({messages, editMessage, handleDeleteMessage}) => {
             {
                 messages.map((message, i) => {
                     return (
-                     <Message key={i} position={i} name={message.name} text={message.text} editMessage={editMessage} handleDeleteMessage={handleDeleteMessage} />
+                     <Message 
+                        key={i} 
+                        id={message.id} 
+                        date={message.date}
+                        edited={message.edited}
+                        name={message.name} 
+                        text={message.text} 
+                        editMessage={editMessage} 
+                        handleDeleteMessage={handleDeleteMessage} />
                     );
                 })
             }

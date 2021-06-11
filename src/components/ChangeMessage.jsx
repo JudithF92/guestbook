@@ -7,7 +7,7 @@ const ChangeMessage = ({ onTextChange, handleEditInput, onCancel}) => {
             <h3>Change Message</h3>
              Message <br/>
             <textarea className="enterMessage" placeholder="Enter Message" onChange={onTextChange} />
-            <button id="submitInput" onClick={handleEditInput}>Edit Message</button>
+            <button id="submitChange" onClick={handleEditInput}>Edit Message</button>
             <button id="cancel" onClick={onCancel}>Cancel</button>
         </div>
     );

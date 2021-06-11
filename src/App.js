@@ -16,22 +16,22 @@ class App extends React.Component {
       text: '',
       showInput: false,
       showChangeMessage: false,
-      editIndex: null
+      id: null
     }
   }
 
-  // componentDidMount() {
-  //   fetch('http://localhost:3001/')
-  //     .then(response => response.json())
-  //     .then(console.log)
-  // }
+  componentDidMount() {
+    fetch('http://localhost:3001/')
+      .then(response => response.json())
+      .then(data => this.setState({messages: data}))
+  }
 
   onNewEntry = () => {
     this.setState({showInput: true})
   }
 
-  onEditMessage = (index, e) => {
-    this.setState({editIndex: index})
+  onEditMessage = (id, e) => {
+    this.setState({id: id})
     this.setState({showChangeMessage: true})
   }
 
@@ -45,45 +45,64 @@ class App extends React.Component {
 
   onSubmitInput = () => {
     if(this.state.name !== '' && this.state.text !== ''){
-      this.setState(prevState => ({
-        messages: [...prevState.messages, 
-          {
-            id: 0,
-            name: this.state.name,
-            text: this.state.text
-          }]}), 
-          () => (
-            this.setState({
-              name: '',
-              text: ''
-            })
-          ));
+      fetch('http://localhost:3001/postmessage', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: this.state.name,
+          text: this.state.text
+        })})
+        .then(response => response.json())
+        .then(message => 
+          this.setState(prevState => ({
+            messages: [...prevState.messages, message]}), 
+              () => (
+                this.setState({
+                  name: '',
+                  text: ''
+                }))
+          ))
       this.onCancel();
-      // TODO store in database
     }
   }
 
   handleEditInput = () => {
     if(this.state.text !== ''){
-      console.log(this.state.editIndex)
-      const array = [...this.state.messages];
-      array[this.state.editIndex].text = this.state.text;
-      this.setState({messages: array}, 
-        () => (
-          this.setState({
-            text: ''
-          })
-        ));
+
+      fetch('http://localhost:3001/changemessage', {
+        method: 'put',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          id: this.state.id,
+          text: this.state.text
+        })})
+        .then(response => response.json())
+        .then(messages => this.setState({messages: messages}, 
+          () => (
+            this.setState({
+              text: ''
+            })
+          )))
+
       this.onCancel();
       // TODO update database
     }
   }
 
-  handleDeleteMessage = (position, e) => {
-    const array = [...this.state.messages];
-    array.splice(position, 1);
-    this.setState({messages: array});
-    //TODO delete from database
+  handleDeleteMessage = (id, e) => {
+    console.log(id);
+    fetch('http://localhost:3001/deletemessage', {
+      method: 'delete',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id: id
+      })})
+      .then(response => response.json())
+      .then(messages => this.setState({ messages: messages}))
+      
+     
+    //TODO server error cannot set headers after they are sent to the client // put and delete
+    // evtl weil jede message gleich ID oder weil return nicht funktioniert für for loops
   }
 
   onCancel = () => {

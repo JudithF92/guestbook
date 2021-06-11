@@ -1,7 +1,12 @@
 .changeMessageWrapper{
     border: 2px solid black;
     width: 30vw;
-    background-color: white;
+    min-width: 300px;
+    background: linear-gradient(
+        to bottom,
+        rgb(97,61,127) 0%,
+        rgb(215,151,225) 100%
+        );
     position: absolute;
     z-index: 1;
     left: 50%;
@@ -9,6 +14,12 @@
     transform: translate(-50%, -50%);
     text-align: center;
     padding: 0 1rem 1.5rem;
+    border-radius: 10px;
+}
+
+.changeMessageWrapper h3 {
+    color: white;
+    margin-top: 1rem;
 }
 
 .enterMessage {
@@ -18,4 +29,24 @@
     height: 5rem;
     padding: 0;
     margin: 0.2rem 0 1rem;
+}
+
+#submitChange{
+    margin-right: 1rem;
+}
+
+.changeMessageWrapper button {
+    background-color: lightblue;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.changeMessageWrapper button:focus{
+    outline: none;
+}
+
+.changeMessageWrapper button:active{
+    transform: scale(1.02);
 }

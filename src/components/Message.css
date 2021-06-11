@@ -1,7 +1,7 @@
 .messageWrapper {
     border: 2px solid black;
     width: 100%;
-    background-color: lightblue;
+    background-color: #5dbedb;
     border-radius: 5px;
     margin-bottom: 1rem;
 }
@@ -14,9 +14,10 @@
 .textWrapper {
     border: 2px solid black;
     font-size: 1.5rem;
-    background-color: beige;
+    background-color: #ffdef3;
     margin: 0 0.5rem 0.2rem;
     border-radius: 5px;
+    
 }
 
 p {
@@ -44,4 +45,8 @@ p {
     text-align: end;
     font-style: italic;
     color: gray;
+}
+
+.transparent {
+    color: transparent;
 }
