@@ -21,9 +21,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:3001/')
+    fetch('https://safe-brushlands-34997.herokuapp.com/getmessages')
       .then(response => response.json())
-      .then(data => this.setState({messages: data}))
+      .then(data => {
+        if (data !== "unable to get messages")
+          this.setState({messages: data})})
   }
 
   onNewEntry = () => {
@@ -45,7 +47,7 @@ class App extends React.Component {
 
   onSubmitInput = () => {
     if(this.state.name !== '' && this.state.text !== ''){
-      fetch('http://localhost:3001/postmessage', {
+      fetch('https://safe-brushlands-34997.herokuapp.com/postmessage', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -69,7 +71,7 @@ class App extends React.Component {
   handleEditInput = () => {
     if(this.state.text !== ''){
 
-      fetch('http://localhost:3001/changemessage', {
+      fetch('https://safe-brushlands-34997.herokuapp.com/changemessage', {
         method: 'put',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -85,24 +87,19 @@ class App extends React.Component {
           )))
 
       this.onCancel();
-      // TODO update database
     }
   }
 
   handleDeleteMessage = (id, e) => {
     console.log(id);
-    fetch('http://localhost:3001/deletemessage', {
+    fetch('https://safe-brushlands-34997.herokuapp.com/deletemessage', {
       method: 'delete',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         id: id
       })})
       .then(response => response.json())
-      .then(messages => this.setState({ messages: messages}))
-      
-     
-    //TODO server error cannot set headers after they are sent to the client // put and delete
-    // evtl weil jede message gleich ID oder weil return nicht funktioniert für for loops
+      .then(messages => this.setState({ messages: messages}))   
   }
 
   onCancel = () => {
@@ -118,8 +115,7 @@ class App extends React.Component {
         <div className="contentWrapper">
           <h1>Guestbook</h1>
           <button id='newEntry' onClick={this.onNewEntry}><FontAwesomeIcon icon={faPlus} /> New Entry</button>
-          <DisplayMessages messages={this.state.messages} editMessage={this.onEditMessage} handleDeleteMessage={this.handleDeleteMessage} />
-          
+          {this.state.messages.length ? <DisplayMessages messages={this.state.messages} editMessage={this.onEditMessage} handleDeleteMessage={this.handleDeleteMessage} /> : null}
         </div>
       </div>
     );
