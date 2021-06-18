@@ -1,3 +1,10 @@
+.overlayNewMessage {
+    position: fixed;
+    background-color: rgba(0,0,0,0.5);
+    width: 100vw;
+    height: 100vh;
+}
+
 .userInputWrapper{
     border: 2px solid black;
     width: 30vw;
@@ -7,7 +14,7 @@
         rgb(97,61,127) 0%,
         rgb(215,151,225) 100%
         );
-    position: absolute;
+    position: fixed;
     z-index: 1;
     left: 50%;
     top: 50%;
@@ -15,10 +22,8 @@
     text-align: center;
     padding: 0 1rem 1.5rem;
     border-radius: 10px;
-}
-
-.userInputWrapper h3 {
     color: white;
+    font-weight: 500;
 }
 
 .name {
@@ -39,6 +44,7 @@
 }
 
 .userInputWrapper button {
+    cursor: pointer;
     background-color: lightblue;
     border: none;
     padding: 0.5rem 1rem;

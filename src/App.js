@@ -1,7 +1,9 @@
 import React from 'react';
-import UserInput from './components/UserInput';
-import ChangeMessage from './components/ChangeMessage';
-import DisplayMessages from './components/DisplayMessages';
+import CreateMessageForm from './components/CreateMessageForm';
+import ChangeMessageForm from './components/ChangeMessageForm';
+import ConfirmDeleteMessage from './components/ConfirmDeleteMessage';
+import DisplayInformation from './components/DisplayInformation';
+import MessageList from './components/MessageList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
@@ -14,8 +16,12 @@ class App extends React.Component {
       messages: [],
       name: '',
       text: '',
-      showInput: false,
-      showChangeMessage: false,
+      showCreateMessageForm: false,
+      showChangeMessageForm: false,
+      showConfirmDeleteMessage: false,
+      showDisplayInformation: false,
+      displayInformation: '',
+      
       id: null
     }
   }
@@ -29,12 +35,17 @@ class App extends React.Component {
   }
 
   onNewEntry = () => {
-    this.setState({showInput: true})
+    this.setState({showCreateMessageForm: true})
   }
 
   onEditMessage = (id, e) => {
     this.setState({id: id})
-    this.setState({showChangeMessage: true})
+    this.setState({showChangeMessageForm: true})
+  }
+
+  onDeleteMessage = (id, e) => {
+    this.setState({id: id})
+    this.setState({showConfirmDeleteMessage: true})
   }
 
   onNameChange = (event) => {
@@ -45,7 +56,17 @@ class App extends React.Component {
     this.setState({text: event.target.value})
   }
 
-  onSubmitInput = () => {
+  onCancel = () => {
+    this.setState({showCreateMessageForm: false});
+    this.setState({showChangeMessageForm: false});
+    this.setState({showConfirmDeleteMessage: false});
+  }
+
+  onCancelInformationWindow = () => {
+    this.setState({showDisplayInformation: false});
+  }
+
+  handleSubmitInput = () => {
     if(this.state.name !== '' && this.state.text !== ''){
       fetch('https://safe-brushlands-34997.herokuapp.com/postmessage', {
         method: 'post',
@@ -55,22 +76,31 @@ class App extends React.Component {
           text: this.state.text
         })})
         .then(response => response.json())
-        .then(message => 
+        .then(message => {
           this.setState(prevState => ({
             messages: [...prevState.messages, message]}), 
               () => (
                 this.setState({
                   name: '',
                   text: ''
-                }))
-          ))
+                })))
+          this.setState({displayInformation: 'Your message is now displayed'});
+          this.setState({showDisplayInformation: true});
+        })
+        .catch(()=>{
+          this.setState({displayInformation: 'Backend error: Message could not be submitted'});
+          this.setState({showDisplayInformation: true});
+        })
+      
       this.onCancel();
+    } else {
+      this.setState({displayInformation: 'Please enter a name and a message'});
+      this.setState({showDisplayInformation: true});
     }
   }
 
-  handleEditInput = () => {
+  handleEditMessage = () => {
     if(this.state.text !== ''){
-
       fetch('https://safe-brushlands-34997.herokuapp.com/changemessage', {
         method: 'put',
         headers: {'Content-Type': 'application/json'},
@@ -79,43 +109,55 @@ class App extends React.Component {
           text: this.state.text
         })})
         .then(response => response.json())
-        .then(messages => this.setState({messages: messages}, 
+        .then(messages => {
+          this.setState({messages: messages}, 
           () => (
             this.setState({
               text: ''
             })
-          )))
+          ))
+          this.setState({displayInformation: 'Your message was edited'});
+          this.setState({showDisplayInformation: true});
+        })
+        .catch(()=>{
+          this.setState({displayInformation: 'Backend error: Message could not be edited'});
+          this.setState({showDisplayInformation: true});
+        })
 
       this.onCancel();
+    } else {
+      this.setState({displayInformation: 'Please enter a message'})
+      this.setState({showDisplayInformation: true})
     }
   }
 
-  handleDeleteMessage = (id, e) => {
-    console.log(id);
+  handleDeleteMessage = () => {
     fetch('https://safe-brushlands-34997.herokuapp.com/deletemessage', {
       method: 'delete',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        id: id
+        id: this.state.id
       })})
       .then(response => response.json())
-      .then(messages => this.setState({ messages: messages}))   
-  }
-
-  onCancel = () => {
-    this.setState({showInput: false});
-    this.setState({showChangeMessage: false})
+      .then(messages => this.setState({ messages: messages}))
+      .catch(() => {
+        this.setState({displayInformation: 'Backend error: Message could not be deleted'});
+        this.setState({showDisplayInformation: true});
+      })   
+      this.onCancel();
   }
 
   render() {
     return (
       <div className="App">
-        {this.state.showInput ? <UserInput onNameChange={this.onNameChange} onTextChange={this.onTextChange} onSubmitInput={this.onSubmitInput} onCancel={this.onCancel} /> : null}
-        {this.state.showChangeMessage ? <ChangeMessage onTextChange={this.onTextChange} handleEditInput={this.handleEditInput} onCancel={this.onCancel} /> : null}
+        {this.state.showDisplayInformation ? <DisplayInformation displayInformation={this.state.displayInformation} onCancel={this.onCancelInformationWindow} /> : null} 
+        {this.state.showConfirmDeleteMessage ? <ConfirmDeleteMessage onDeleteMessage={this.handleDeleteMessage} onCancel={this.onCancel} /> : null}
+        {this.state.showCreateMessageForm ? <CreateMessageForm onNameChange={this.onNameChange} onTextChange={this.onTextChange} onSubmitInput={this.handleSubmitInput} onCancel={this.onCancel} /> : null}
+        {this.state.showChangeMessageForm ? <ChangeMessageForm onTextChange={this.onTextChange} onEditMessage={this.handleEditMessage} onCancel={this.onCancel} /> : null}
         <div className="contentWrapper">
           <h1>Guestbook</h1>
           <button id='newEntry' onClick={this.onNewEntry}><FontAwesomeIcon icon={faPlus} /> New Entry</button>
-          {this.state.messages.length ? <DisplayMessages messages={this.state.messages} editMessage={this.onEditMessage} handleDeleteMessage={this.handleDeleteMessage} /> : null}
+          {this.state.messages.length ? <MessageList messages={this.state.messages} onEditMessage={this.onEditMessage} onDeleteMessage={this.onDeleteMessage} /> : <h2>Loading Messages...</h2>}
         </div>
       </div>
     );

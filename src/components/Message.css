@@ -25,7 +25,7 @@ p {
 }
 
 .date {
-    color: gray;
+    color: #36454f;
 }
 
 .icons {
@@ -33,6 +33,7 @@ p {
 }
 
 .editMessage, .deleteMessage {
+    cursor: pointer;
     background-color: transparent;
     border: none;
 }
@@ -44,7 +45,6 @@ p {
 .edited {
     text-align: end;
     font-style: italic;
-    color: gray;
 }
 
 .transparent {
