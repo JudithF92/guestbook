@@ -20,8 +20,7 @@ class App extends React.Component {
       showChangeMessageForm: false,
       showConfirmDeleteMessage: false,
       showDisplayInformation: false,
-      displayInformation: '',
-      
+      displayInformation: '',     
       id: null
     }
   }
@@ -30,10 +29,14 @@ class App extends React.Component {
     fetch('https://safe-brushlands-34997.herokuapp.com/getmessages')
       .then(response => response.json())
       .then(data => {
-        if (data !== "unable to get messages")
-          this.setState({messages: data})})
+        if (data !== 'unable to get messages')
+          this.setState({messages: data})
+        else {
+          this.setState({displayInformation: 'Backend error: Unable to get messages'});
+          this.setState({showDisplayInformation: true});
+        }})
       .catch(()=>{
-        this.setState({displayInformation: 'Backend error: Unable to get messages'});
+        this.setState({displayInformation: 'Error: Unable to get messages'});
         this.setState({showDisplayInformation: true});
       })
   }
@@ -72,7 +75,7 @@ class App extends React.Component {
 
   handleSubmitInput = () => {
     if(this.state.name !== '' && this.state.text !== ''){
-      fetch('https://safe-brushlands-34997.herokuapp.com/postmessage', {
+      fetch('https://safe-brushlands-34997.herokuapp.com/createmessage', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -81,18 +84,23 @@ class App extends React.Component {
         })})
         .then(response => response.json())
         .then(message => {
-          this.setState(prevState => ({
-            messages: [message, ...prevState.messages]}), 
-              () => (
-                this.setState({
-                  name: '',
-                  text: ''
-                })))
-          this.setState({displayInformation: 'Your message is now displayed'});
-          this.setState({showDisplayInformation: true});
+          if (message !== 'unable to store message'){
+            this.setState(prevState => ({
+              messages: [message, ...prevState.messages]}), 
+                () => (
+                  this.setState({
+                    name: '',
+                    text: ''
+                  })))
+            this.setState({displayInformation: 'Your message is now displayed'});
+            this.setState({showDisplayInformation: true});
+          } else {
+            this.setState({displayInformation: 'Backend error: Unable to store message'});
+            this.setState({showDisplayInformation: true});
+          }
         })
         .catch(()=>{
-          this.setState({displayInformation: 'Backend error: Message could not be submitted'});
+          this.setState({displayInformation: 'Error: Message could not be submitted'});
           this.setState({showDisplayInformation: true});
         })
       
@@ -105,7 +113,7 @@ class App extends React.Component {
 
   handleEditMessage = () => {
     if(this.state.text !== ''){
-      fetch('https://safe-brushlands-34997.herokuapp.com/changemessage', {
+      fetch('https://safe-brushlands-34997.herokuapp.com/updatemessage', {
         method: 'put',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -114,17 +122,22 @@ class App extends React.Component {
         })})
         .then(response => response.json())
         .then(messages => {
-          this.setState({messages: messages}, 
-          () => (
-            this.setState({
-              text: ''
-            })
-          ))
-          this.setState({displayInformation: 'Your message was edited'});
-          this.setState({showDisplayInformation: true});
+          if (messages !== 'unable to edit message') {
+            this.setState({messages: messages}, 
+            () => (
+              this.setState({
+                text: ''
+              })
+            ))
+            this.setState({displayInformation: 'Your message was edited'});
+            this.setState({showDisplayInformation: true});
+          } else {
+            this.setState({displayInformation: 'Backend error: Unable to edit messages'});
+            this.setState({showDisplayInformation: true});
+          }
         })
         .catch(()=>{
-          this.setState({displayInformation: 'Backend error: Message could not be edited'});
+          this.setState({displayInformation: 'Error: Message could not be edited'});
           this.setState({showDisplayInformation: true});
         })
 
@@ -143,9 +156,16 @@ class App extends React.Component {
         id: this.state.id
       })})
       .then(response => response.json())
-      .then(messages => this.setState({ messages: messages}))
+      .then(messages => {
+        if(messages !== 'unable to delete message') 
+          this.setState({ messages: messages})
+          else {
+            this.setState({displayInformation: 'Backend error: Unable to delete messages'});
+            this.setState({showDisplayInformation: true});
+          }
+      })
       .catch(() => {
-        this.setState({displayInformation: 'Backend error: Message could not be deleted'});
+        this.setState({displayInformation: 'Error: Message could not be deleted'});
         this.setState({showDisplayInformation: true});
       })   
       this.onCancel();
