@@ -32,6 +32,10 @@ class App extends React.Component {
       .then(data => {
         if (data !== "unable to get messages")
           this.setState({messages: data})})
+      .catch(()=>{
+        this.setState({displayInformation: 'Backend error: Unable to get messages'});
+        this.setState({showDisplayInformation: true});
+      })
   }
 
   onNewEntry = () => {
@@ -78,7 +82,7 @@ class App extends React.Component {
         .then(response => response.json())
         .then(message => {
           this.setState(prevState => ({
-            messages: [...prevState.messages, message]}), 
+            messages: [message, ...prevState.messages]}), 
               () => (
                 this.setState({
                   name: '',

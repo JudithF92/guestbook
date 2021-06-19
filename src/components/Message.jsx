@@ -8,7 +8,7 @@ import moment from 'moment';
 export const Message = ({name, date, edited, id, text, onEditMessage, onDeleteMessage}) => (
     <div className="messageWrapper">
         <p className="info"> 
-            {name} 
+            <span className="nameSpan">{name}</span>
             <span className="date">{moment(date).format("YYYY-MM-DD  HH:mm")}</span>
             <span className="icons">
                 <button className="editMessage" onClick={(e) => onEditMessage(id, e)}><FontAwesomeIcon icon={faPen} /></button> 
@@ -20,7 +20,7 @@ export const Message = ({name, date, edited, id, text, onEditMessage, onDeleteMe
                 {text}
             </p>
         </div>
-        {edited ? <p className="edited date">Last edited: {moment(edited).format("YYYY-MM-DD  HH:mm")}</p> 
+        {edited ? <p className="edited">Last edited: {moment(edited).format("YYYY-MM-DD  HH:mm")}</p> 
                 : <p className="transparent">Last edited:</p>}
     </div>
 );

@@ -8,7 +8,6 @@
 
 .info {
     display: flex;
-    justify-content: space-between;
 }
 
 .textWrapper {
@@ -24,12 +23,19 @@ p {
     margin: 0.2rem 1rem;
 }
 
+.nameSpan {
+    width: 25%;
+}
+
 .date {
     color: #36454f;
+    width: 50%;
+    text-align: center;
 }
 
 .icons {
     text-align: end;
+    width: 25%;
 }
 
 .editMessage, .deleteMessage {
@@ -43,6 +49,7 @@ p {
 }
 
 .edited {
+    color: #36454f;
     text-align: end;
     font-style: italic;
 }
