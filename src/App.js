@@ -16,12 +16,13 @@ class App extends React.Component {
       messages: [],
       name: '',
       text: '',
+      id: null,
       showCreateMessageForm: false,
       showChangeMessageForm: false,
       showConfirmDeleteMessage: false,
       showDisplayInformation: false,
       displayInformation: '',     
-      id: null
+      storeMessageStatus: 'failed'
     }
   }
 
@@ -181,7 +182,7 @@ class App extends React.Component {
         <div className="contentWrapper">
           <h1>Guestbook</h1>
           <button id='newEntry' onClick={this.onNewEntry}><FontAwesomeIcon icon={faPlus} /> New Entry</button>
-          {this.state.messages.length ? <MessageList messages={this.state.messages} onEditMessage={this.onEditMessage} onDeleteMessage={this.onDeleteMessage} /> : <h2>Loading Messages...</h2>}
+          {this.state.messages.length ? <MessageList messages={this.state.messages} onEditMessage={this.onEditMessage} onDeleteMessage={this.onDeleteMessage} onStoreMessageStatus={this.state.storeMessageStatus} /> : <h2>Loading Messages...</h2>}
         </div>
       </div>
     );

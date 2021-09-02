@@ -1,11 +1,23 @@
 import React from 'react';
 import './Message.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash, faSpinner, faCheckSquare, faTimes } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 
+const switchFunction = onStoreMessageStatus => {
+    switch (onStoreMessageStatus) {
+        case 'sending':
+            return <p><FontAwesomeIcon icon={faSpinner} spin /> Storing Message...</p>;
+        case 'succeeded':
+            return <p><FontAwesomeIcon icon={faCheckSquare} color="green" /> Message Stored</p>;
+        case 'failed':
+            return <p><FontAwesomeIcon icon={faTimes} color="red" /> An error occurred. <i>Try again?</i></p>;
+        default:
+            return <p />;
+    }
+}
 
-export const Message = ({name, date, edited, id, text, onEditMessage, onDeleteMessage}) => (
+export const Message = ({name, date, edited, id, text, onEditMessage, onDeleteMessage, onStoreMessageStatus}) => (
     <div className="messageWrapper">
         <p className="info"> 
             <span className="nameSpan">{name}</span>
@@ -20,7 +32,11 @@ export const Message = ({name, date, edited, id, text, onEditMessage, onDeleteMe
                 {text}
             </p>
         </div>
-        {edited ? <p className="edited">Last edited: {moment(edited).format("YYYY-MM-DD  HH:mm")}</p> 
-                : <p className="transparent">Last edited:</p>}
+        <div className="messageBottom">
+            {switchFunction(onStoreMessageStatus)}
+
+            {edited ? <p className="edited">Last edited: {moment(edited).format("YYYY-MM-DD  HH:mm")}</p> 
+                    : <p className="transparent">Last edited:</p>}
+        </div>
     </div>
 );

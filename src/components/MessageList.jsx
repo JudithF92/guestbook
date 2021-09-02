@@ -1,7 +1,7 @@
 import React from 'react';
 import {Message} from './Message';
 
-const DisplayMessages = ({messages, onEditMessage, onDeleteMessage}) => {
+const DisplayMessages = ({messages, onEditMessage, onDeleteMessage, onStoreMessageStatus}) => {
     return (
         <div>
             {
@@ -11,7 +11,8 @@ const DisplayMessages = ({messages, onEditMessage, onDeleteMessage}) => {
                         key={i} 
                         {...message} 
                         onEditMessage={onEditMessage} 
-                        onDeleteMessage={onDeleteMessage} />
+                        onDeleteMessage={onDeleteMessage}
+                        onStoreMessageStatus={onStoreMessageStatus} />
                     );
                 })
             }

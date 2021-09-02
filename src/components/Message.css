@@ -48,6 +48,11 @@ p {
     transform: scale(1.02);
 }
 
+.messageBottom{
+    display: flex;
+    justify-content: space-between;
+}
+
 .edited {
     color: #36454f;
     text-align: end;
