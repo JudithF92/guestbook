@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 
-
 class App extends React.Component {
   constructor() {
     super();
@@ -29,7 +28,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('https://safe-brushlands-34997.herokuapp.com/getmessages')
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 8000);
+    fetch('https://safe-brushlands-34997.herokuapp.com/getmessages', {signal: controller.signal})
       .then(response => response.json())
       .then(data => {
         if (data !== 'unable to get messages')
@@ -98,20 +99,23 @@ class App extends React.Component {
         messages: [message, ...prevState.messages]}), 
           () => (
             this.setState({storeMessageStatus: 'sending'}
-            )))
+            )));
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 8000);
       fetch('https://safe-brushlands-34997.herokuapp.com/createmessage', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           name: this.state.name,
           text: this.state.text
-        })})
+        }),
+        signal: controller.signal
+        })
         .then(response => response.json())
         .then(message => {
           if (message !== 'unable to store message'){
             const array = this.state.messages;
             array.splice(0,1);
-            // this.setState({messages: array});
             this.setState({            
               messages: [message, ...array]}, 
                 () => (
@@ -157,13 +161,17 @@ class App extends React.Component {
       const array=this.state.messages;
       array[indexEdit] = {...array[indexEdit], text: this.state.text, edited: new Date()};
       this.setState({messages: array});
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 8000);
       fetch('https://safe-brushlands-34997.herokuapp.com/updatemessage', {
         method: 'put',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           id: this.state.id,
           text: this.state.text
-        })})
+        }),
+        signal: controller.signal
+        })
         .then(response => response.json())
         .then(messages => {
           if (messages !== 'unable to edit message') {
@@ -195,12 +203,16 @@ class App extends React.Component {
   }
 
   handleDeleteMessage = () => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 8000);
     fetch('https://safe-brushlands-34997.herokuapp.com/deletemessage', {
       method: 'delete',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         id: this.state.id
-      })})
+      }),
+      signal: controller.signal
+      })
       .then(response => response.json())
       .then(messages => {
         if(messages !== 'unable to delete message') 
