@@ -62,3 +62,8 @@ p {
 .transparent {
     color: transparent;
 }
+
+.tryAgain:hover{
+    cursor: pointer;
+    color: gray;
+}

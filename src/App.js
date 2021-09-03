@@ -22,7 +22,9 @@ class App extends React.Component {
       showConfirmDeleteMessage: false,
       showDisplayInformation: false,
       displayInformation: '',     
-      storeMessageStatus: 'failed'
+      storeMessageStatus: '',
+      currentFunction: '',
+      messageIndex: null
     }
   }
 
@@ -46,12 +48,12 @@ class App extends React.Component {
     this.setState({showCreateMessageForm: true})
   }
 
-  onEditMessage = (id, e) => {
+  onEditMessage = (id) => {
     this.setState({id: id})
     this.setState({showChangeMessageForm: true})
   }
 
-  onDeleteMessage = (id, e) => {
+  onDeleteMessage = (id) => {
     this.setState({id: id})
     this.setState({showConfirmDeleteMessage: true})
   }
@@ -74,8 +76,29 @@ class App extends React.Component {
     this.setState({showDisplayInformation: false});
   }
 
+  onTryAgain = () => {
+    if (this.state.currentFunction === 'submit') {
+      const array = this.state.messages;
+      array.splice(0,1);
+      this.setState({messages: array});
+      this.handleSubmitInput();
+    } else if (this.state.currentFunction === 'edit'){
+      this.handleEditMessage();
+    }
+  }
+
   handleSubmitInput = () => {
     if(this.state.name !== '' && this.state.text !== ''){
+      this.setState({messageIndex: 0});
+      const message = { 
+        name: this.state.name,
+        text: this.state.text,
+        date: new Date()}
+      this.setState(prevState => ({
+        messages: [message, ...prevState.messages]}), 
+          () => (
+            this.setState({storeMessageStatus: 'sending'}
+            )))
       fetch('https://safe-brushlands-34997.herokuapp.com/createmessage', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -86,23 +109,28 @@ class App extends React.Component {
         .then(response => response.json())
         .then(message => {
           if (message !== 'unable to store message'){
-            this.setState(prevState => ({
-              messages: [message, ...prevState.messages]}), 
+            const array = this.state.messages;
+            array.splice(0,1);
+            // this.setState({messages: array});
+            this.setState({            
+              messages: [message, ...array]}, 
                 () => (
                   this.setState({
                     name: '',
                     text: ''
                   })))
-            this.setState({displayInformation: 'Your message is now displayed'});
-            this.setState({showDisplayInformation: true});
+            this.setState({storeMessageStatus: 'succeeded'});
+            setTimeout(function(){
+              this.setState({storeMessageStatus: ''})
+            }.bind(this), 3000);
           } else {
-            this.setState({displayInformation: 'Backend error: Unable to store message'});
-            this.setState({showDisplayInformation: true});
+            this.setState({currentFunction: 'submit'});
+            this.setState({storeMessageStatus: 'failed'});
           }
         })
         .catch(()=>{
-          this.setState({displayInformation: 'Error: Message could not be submitted'});
-          this.setState({showDisplayInformation: true});
+          this.setState({currentFunction: 'submit'})
+          this.setState({storeMessageStatus: 'failed'});
         })
       
       this.onCancel();
@@ -114,6 +142,21 @@ class App extends React.Component {
 
   handleEditMessage = () => {
     if(this.state.text !== ''){
+      const length = this.state.messages.length;
+      let indexEdit;
+      for(let i = 0; i<length; i++){
+        if(this.state.id === this.state.messages[i].id){
+          indexEdit = i;
+          break;
+        }
+      }
+      this.setState({messageIndex: indexEdit}, 
+        () => (
+          this.setState({storeMessageStatus: 'sending'}
+          )));
+      const array=this.state.messages;
+      array[indexEdit] = {...array[indexEdit], text: this.state.text, edited: new Date()};
+      this.setState({messages: array});
       fetch('https://safe-brushlands-34997.herokuapp.com/updatemessage', {
         method: 'put',
         headers: {'Content-Type': 'application/json'},
@@ -130,16 +173,18 @@ class App extends React.Component {
                 text: ''
               })
             ))
-            this.setState({displayInformation: 'Your message was edited'});
-            this.setState({showDisplayInformation: true});
+            this.setState({storeMessageStatus: 'succeeded'});
+            setTimeout(function(){
+              this.setState({storeMessageStatus: ''})
+            }.bind(this), 3000);
           } else {
-            this.setState({displayInformation: 'Backend error: Unable to edit messages'});
-            this.setState({showDisplayInformation: true});
+            this.setState({currentFunction: 'edit'})
+            this.setState({storeMessageStatus: 'failed'});
           }
         })
         .catch(()=>{
-          this.setState({displayInformation: 'Error: Message could not be edited'});
-          this.setState({showDisplayInformation: true});
+          this.setState({currentFunction: 'edit'})
+          this.setState({storeMessageStatus: 'failed'});
         })
 
       this.onCancel();
@@ -182,7 +227,7 @@ class App extends React.Component {
         <div className="contentWrapper">
           <h1>Guestbook</h1>
           <button id='newEntry' onClick={this.onNewEntry}><FontAwesomeIcon icon={faPlus} /> New Entry</button>
-          {this.state.messages.length ? <MessageList messages={this.state.messages} onEditMessage={this.onEditMessage} onDeleteMessage={this.onDeleteMessage} onStoreMessageStatus={this.state.storeMessageStatus} /> : <h2>Loading Messages...</h2>}
+          {this.state.messages.length ? <MessageList messages={this.state.messages} onEditMessage={this.onEditMessage} onDeleteMessage={this.onDeleteMessage} onStoreMessageStatus={this.state.storeMessageStatus} onTryAgain={this.onTryAgain} messageIndex={this.state.messageIndex} /> : <h2>Loading Messages...</h2>}
         </div>
       </div>
     );

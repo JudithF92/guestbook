@@ -1,7 +1,7 @@
 import React from 'react';
 import {Message} from './Message';
 
-const DisplayMessages = ({messages, onEditMessage, onDeleteMessage, onStoreMessageStatus}) => {
+const DisplayMessages = ({messages, onEditMessage, onDeleteMessage, onStoreMessageStatus, onTryAgain, messageIndex}) => {
     return (
         <div>
             {
@@ -12,11 +12,12 @@ const DisplayMessages = ({messages, onEditMessage, onDeleteMessage, onStoreMessa
                         {...message} 
                         onEditMessage={onEditMessage} 
                         onDeleteMessage={onDeleteMessage}
-                        onStoreMessageStatus={onStoreMessageStatus} />
+                        onStoreMessageStatus={`${i===messageIndex ? onStoreMessageStatus : ''}`}
+                        onTryAgain={onTryAgain} 
+                    />
                     );
                 })
             }
-                 
         </div>
     );
 }
